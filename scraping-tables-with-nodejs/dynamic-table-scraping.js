@@ -18,6 +18,7 @@ async function main() {
           .toLowerCase()
           );
       });
+      return true;
     };
     const tds = $(element).find("td");
     const tableRow = {};
