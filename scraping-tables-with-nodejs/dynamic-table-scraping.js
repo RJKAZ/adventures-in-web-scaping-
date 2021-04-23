@@ -7,21 +7,27 @@ async function main() {
   );
   const $ = cheerio.load(result);
   const scrapedRows = [];
-  //$('body > table > tbody > tr > td').each((index, element) => {
-  //  console.log($(element).text());
-  //});
+  const tableHeaders = [];
   $("body > table > tbody > tr").each((index, element) => {
-    if (index === 0) return true;
+    if (index === 0) {
+      const ths = $(element).find("th");
+      ths.each((index, element) => {
+        tableHeaders.push(
+          $(element)
+          .text()
+          .toLowerCase()
+          );
+      });
+    };
     const tds = $(element).find("td");
-    const company = $(tds[0]).text();
-    const contact = $(tds[1]).text();
-    const country = $(tds[2]).text();
-    const scrapedRow = { company, contact, country}
-    scrapedRows.push(scrapedRow);
+    const tableRow = {};
+    tds.each((index, element) => {
+      tableRow[tableHeaders[index]] = $(element).text();
+  });
+    scrapedRows.push(tableRow);
   });
   console.log(scrapedRows);
 }
 
 main();
-
 
