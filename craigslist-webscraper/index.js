@@ -1,5 +1,17 @@
 const puppetter = require("puppeteer");
 const cheerio = require("cheerio");
+const mongoose = require('mongoose');
+const Listing = require('./model/Listing');
+//For MongoDB Atlas
+// user: craigslistuser
+// password: superstrongpassword
+
+async function connectToMongoDb() {
+  await mongoose.connect("mongodb+srv://craigslistuser:superstrongpassword@craigslistlistings.rhtjx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {useNewUrlParser: true} );
+  console.log("connected to mongodb");
+}
+
+
 
 async function scrapeListings(page) {
   await page.goto(
@@ -31,6 +43,8 @@ async function scrapeJobDescriptions(listings, page) {
     listings[i].compensation = compensation;
     console.log(listings[i].jobDescription);
     console.log(listings[i].compensation);
+    const listingModel = new Listing(listings[i]);
+    await listingModel.save();
     await sleep(1000); // 1 second sleep 
   }
 }
@@ -42,6 +56,7 @@ async function sleep(miliseconds){
 }
 
 async function main() {
+  await connectToMongoDb();
   const browser = await puppetter.launch({ headless: false });
   const page = await browser.newPage();
   const listings = await scrapeListings(page);
