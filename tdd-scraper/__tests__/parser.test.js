@@ -14,13 +14,13 @@ it("should give the correct number of listings", () => {
 
 it("should get correct url", () => {
   expect(listings[0].url).toBe(
-    "https://newyork.craigslist.org/mnh/lss/d/new-york-finance-economics-accounting/7320209786.html");
+    "https://newyork.craigslist.org/mnh/lss/d/new-york-american-accent-coach-accent/7320217350.html");
 })
 
 
 it("should get correct title", () => {
   const listings = parser.listings(html);
-  expect(listings[0].title).toBe("Finance Economics Accounting Tutor");
+  expect(listings[0].title).toBe("American Accent Coach/Accent Reduction/Pronunciation");
 })
 
 
