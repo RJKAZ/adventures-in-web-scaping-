@@ -30,7 +30,17 @@ async function scrapeHomesInIndexPage(url) {
 
 async function scrapeDescriptionPage(url, page) {
   try {
-    await page.goto(url);
+    // consider navigation to be finsihed when there are no more than 2 network connections for at least 500 ms
+    await page.goto(url, { waitUntil: "networkidle2" });
+    const html = await page.evaluate(() => document.body.innerHTML);
+    const $ = await cheerio.load(html);
+
+    const pricePerNight = $(
+      "#FMP-target > div > div > div > div > div:nth-child(1) > div > div > div > div > div > div > div > div > div > div > div > span"
+    ).text();
+  
+    console.log(pricePerNight);
+
   } catch (err) {
     console.error(err);
   }
