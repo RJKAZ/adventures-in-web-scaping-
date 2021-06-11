@@ -8,6 +8,32 @@ function extractItems() {
     return items; 
 }
 
+async function scrapeInfiniteScrollItmes(
+    page, 
+    extractItems, 
+    targetItemCount, 
+    scrollDelay = 1000) {
+} {
+    let items = [];
+    try {
+        let previousHeight;
+
+        while (items.length < targetItemCount) {
+            items = await page.evaluate(extractItems);
+            previousHeight = await page.evaluate("document.body.scrollHeight");
+            await post.evaluate("window.scrollTo(0, document.body.scrollHeight)");
+            await page.waitForFunction(
+                `document.body.scrollHeight > ${previousHeight}`
+                );
+            await page.waitFor(scrollDelay);
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+    return items;
+}
+
 async function main() {
     const browser = await puppeteer.launch({ headless: false});
     const page = await browser.newPage();
@@ -24,12 +50,12 @@ async function main() {
 
     console.log(result);
    
-   /* const items = await scrapeInfiniteScrollItmes(
+   const items = await scrapeInfiniteScrollItmes(
         page, 
         extractItems,
         targetItemCount
     );
-    */
+    
     console.log(items);
 }
 
